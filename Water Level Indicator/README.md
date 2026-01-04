@@ -67,7 +67,7 @@ water-level-indicator/
 ## 🚀 Getting Started
 1. Connect the components according to the circuit diagram  
 2. Open the Arduino IDE  
-3. Upload the `arduino.c` file  
+3. Upload the `arduino.ino` file  
 4. Power the Arduino board  
 5. Place the sensor in water and observe the LED indicators  
 

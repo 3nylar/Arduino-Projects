@@ -25,9 +25,10 @@ const int HIGH_THRESHOLD = 95;   // % for almost full
 void setup() {
   Serial.begin(9600);
   
+  // Initialize LCD
   lcd.init();
   lcd.backlight();
-
+  
   pinMode(trigPin, OUTPUT);
   pinMode(echoPin, INPUT);
   pinMode(ledGreen, OUTPUT);
