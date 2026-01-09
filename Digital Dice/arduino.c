@@ -1,14 +1,16 @@
-#define aPin 7  //        
-#define bPin 8  //      
-#define cPin 2  //     
-#define dPin 3  //  
-#define ePin 4  //     
-#define fPin 6  //   
-#define gPin 5  //       
+#define Pin_a 7  //        
+#define Pin_b 8  //      
+#define Pin_c 2  //     
+#define Pin_d 3  //  
+#define Pin_e 4  //     
+#define Pin_f 6  //   
+#define Pin_g 5  //       
 
 // Pin configuration
-#define PIN_BUTTON A0
+#define PIN_BUTTON_P1 A0
+#define PIN_BUTTON_P2 A1
 #define PIN_BUZZER 10
+#define PIN_LED 12
 
 const byte PIN_CHAOS = A5; // Unconnected analog pin used to initialize RNG
 
@@ -22,16 +24,20 @@ void setup() {
   randomSeed(analogRead(PIN_CHAOS));
   Serial.begin(9600);  // Initialize serial communication at 9600 baud
 
-  pinMode(aPin, OUTPUT);
-  pinMode(bPin, OUTPUT);
-  pinMode(cPin, OUTPUT);
-  pinMode(dPin, OUTPUT);
-  pinMode(ePin, OUTPUT); 
-  pinMode(fPin, OUTPUT);
-  pinMode(gPin, OUTPUT);
+  pinMode(Pin_a, OUTPUT);
+  pinMode(Pin_b, OUTPUT);
+  pinMode(Pin_c, OUTPUT);
+  pinMode(Pin_d, OUTPUT);
+  pinMode(Pin_e, OUTPUT); 
+  pinMode(Pin_f, OUTPUT);
+  pinMode(Pin_g, OUTPUT);
   
-  pinMode(PIN_BUTTON, INPUT_PULLUP);    // On button pin as input with pullup
+  pinMode(PIN_BUTTON_P1, INPUT_PULLUP);    // On button pin as input with pullup
+  pinMode(PIN_BUTTON_P2, INPUT_PULLUP); 
   pinMode(PIN_BUZZER, OUTPUT);      // On buzzer pin as output
+
+  pinMode(PIN_LED, OUTPUT);
+  digitalWrite(PIN_LED, LOW); 
  
   // Indicate that system is ready
   for (int i = 9; i >= 0; i--) {
@@ -47,15 +53,23 @@ void setup() {
 
 void loop() {
   // Wait for button to be pressed, then run the test routine
-  int buttonState = digitalRead(PIN_BUTTON);
-  if (buttonState == LOW) {
-    Serial.println("Button pressed, rolling the dice...");
-    rollTheDice(10, 100);          // Show the rolling animation
-    rollTheDice(5, 200);
-    rollTheDice(3, 300);
-    rollTheDice(1, 100);
-    tone(PIN_BUZZER, BEEP_FREQUENCY, 400);  // Beep when done
+  if (digitalRead(PIN_BUTTON_P1) == LOW) {
+    Serial.println("Player 1 rolling...");
+    rollTheDice(6, 150);
+    tone(PIN_BUZZER, BEEP_FREQUENCY, 300);
+    delay(300); // debounce
   }
+
+  if (digitalRead(PIN_BUTTON_P2) == LOW) {
+    Serial.println("Player 2 rolling...");
+    rollTheDice(6, 150);
+    tone(PIN_BUZZER, BEEP_FREQUENCY, 300);
+    delay(300); // debounce
+  }
+}
+
+int rollOnce() {
+  return random(1, 7);
 }
 
 void rollTheDice(int count, int delayLength) {
@@ -86,108 +100,112 @@ void showNumber(int x) {
     case 4: four();  break;
     case 5: five();  break;
     case 6: six();   break;
-    //  case 7: seven(); break;
-    //  case 8: eight(); break;
-    //  case 9: nine();  break;
-    //  default: zero(); break;
+    // 
+  }
+
+  if(x == 6) {
+    digitalWrite(PIN_LED, HIGH);  // turn LED ON
+  } else {
+    digitalWrite(PIN_LED, LOW);   // turn LED OFF
   }
 }
 
 void one() {
-  digitalWrite(aPin, Off); //      
-  digitalWrite(bPin, On);  //      |
-  digitalWrite(cPin, On);  //      |
-  digitalWrite(dPin, Off); //      |
-  digitalWrite(ePin, Off); //      |
-  digitalWrite(fPin, Off);
-  digitalWrite(gPin, Off);
+  digitalWrite(Pin_a, Off); //      
+  digitalWrite(Pin_b, On);  //      |
+  digitalWrite(Pin_c, On);  //      |
+  digitalWrite(Pin_d, Off); //      |
+  digitalWrite(Pin_e, Off); //      |
+  digitalWrite(Pin_f, Off);
+  digitalWrite(Pin_g, Off);
 }
 
 void two() {
-  digitalWrite(aPin, On);  //  ____
-  digitalWrite(bPin, On);  //      | 
-  digitalWrite(cPin, Off); //  ____|
-  digitalWrite(dPin, On);  // |     
-  digitalWrite(ePin, On);  // |____
-  digitalWrite(fPin, Off);
-  digitalWrite(gPin, On);
+  digitalWrite(Pin_a, On);  //  ____
+  digitalWrite(Pin_b, On);  //      | 
+  digitalWrite(Pin_c, Off); //  ____|
+  digitalWrite(Pin_d, On);  // |     
+  digitalWrite(Pin_e, On);  // |____
+  digitalWrite(Pin_f, Off);
+  digitalWrite(Pin_g, On);
 }
 
 void three() {
-  digitalWrite(aPin, On);  //  ____
-  digitalWrite(bPin, On);  //      |
-  digitalWrite(cPin, On);  //  ____|
-  digitalWrite(dPin, On);  //      |
-  digitalWrite(ePin, Off); //  ____|
-  digitalWrite(fPin, Off); 
-  digitalWrite(gPin, On);
+  digitalWrite(Pin_a, On);  //  ____
+  digitalWrite(Pin_b, On);  //      |
+  digitalWrite(Pin_c, On);  //  ____|
+  digitalWrite(Pin_d, On);  //      |
+  digitalWrite(Pin_e, Off); //  ____|
+  digitalWrite(Pin_f, Off); 
+  digitalWrite(Pin_g, On);
 }
 
 void four() {
-  digitalWrite(aPin, Off); //  
-  digitalWrite(bPin, On);  // |    |
-  digitalWrite(cPin, On);  // |____|
-  digitalWrite(dPin, Off); //      |
-  digitalWrite(ePin, Off); //      |
-  digitalWrite(fPin, On);
-  digitalWrite(gPin, On);
+  digitalWrite(Pin_a, Off); //  
+  digitalWrite(Pin_b, On);  // |    |
+  digitalWrite(Pin_c, On);  // |____|
+  digitalWrite(Pin_d, Off); //      |
+  digitalWrite(Pin_e, Off); //      |
+  digitalWrite(Pin_f, On);
+  digitalWrite(Pin_g, On);
 }
 
 void five() {
-  digitalWrite(aPin, On);  //  ____
-  digitalWrite(bPin, Off); // |
-  digitalWrite(cPin, On);  // |____
-  digitalWrite(dPin, On);  //      |
-  digitalWrite(ePin, Off); //  ____|
-  digitalWrite(fPin, On);  
-  digitalWrite(gPin, On);
+  digitalWrite(Pin_a, On);  //  ____
+  digitalWrite(Pin_b, Off); // |
+  digitalWrite(Pin_c, On);  // |____
+  digitalWrite(Pin_d, On);  //      |
+  digitalWrite(Pin_e, Off); //  ____|
+  digitalWrite(Pin_f, On);  
+  digitalWrite(Pin_g, On);
 }
 
 void six() {
-  digitalWrite(aPin, On);  //  ____
-  digitalWrite(bPin, Off); // |
-  digitalWrite(cPin, On);  // |____
-  digitalWrite(dPin, On);  // |    |
-  digitalWrite(ePin, On);  // |____|
-  digitalWrite(fPin, On);
-  digitalWrite(gPin, On);
-}
-void seven() {
-  digitalWrite(aPin, On);  //  ____
-  digitalWrite(bPin, On);  //      |
-  digitalWrite(cPin, On);  //      |
-  digitalWrite(dPin, Off); //      |
-  digitalWrite(ePin, Off); //      |
-  digitalWrite(fPin, Off);
-  digitalWrite(gPin, Off);
+  digitalWrite(Pin_a, On);  //  ____
+  digitalWrite(Pin_b, Off); // |
+  digitalWrite(Pin_c, On);  // |____
+  digitalWrite(Pin_d, On);  // |    |
+  digitalWrite(Pin_e, On);  // |____|
+  digitalWrite(Pin_f, On);
+  digitalWrite(Pin_g, On);
 }
 
-void eight() {
-  digitalWrite(aPin, On); //  ____
-  digitalWrite(bPin, On); // |    |
-  digitalWrite(cPin, On); // |____|
-  digitalWrite(dPin, On); // |    |
-  digitalWrite(ePin, On); // |____|
-  digitalWrite(fPin, On); 
-  digitalWrite(gPin, On); 
-}
+// void seven() {
+//   digitalWrite(Pin_a, On);  //  ____
+//   digitalWrite(Pin_b, On);  //      |
+//   digitalWrite(Pin_c, On);  //      |
+//   digitalWrite(Pin_d, Off); //      |
+//   digitalWrite(Pin_e, Off); //      |
+//   digitalWrite(Pin_f, Off);
+//   digitalWrite(Pin_g, Off);
+// }
 
-void nine() {
-  digitalWrite(aPin, On);  //  ____
-  digitalWrite(bPin, On);  // |    |
-  digitalWrite(cPin, On);  // |____|
-  digitalWrite(dPin, On);  //      |
-  digitalWrite(ePin, Off); //  ____|
-  digitalWrite(fPin, On); 
-  digitalWrite(gPin, On);
-}
+// void eight() {
+//   digitalWrite(Pin_a, On); //  ____
+//   digitalWrite(Pin_b, On); // |    |
+//   digitalWrite(Pin_c, On); // |____|
+//   digitalWrite(Pin_d, On); // |    |
+//   digitalWrite(Pin_e, On); // |____|
+//   digitalWrite(Pin_f, On); 
+//   digitalWrite(Pin_g, On); 
+// }
 
-void zero() {                 
-  digitalWrite(aPin, On); //  ____
-  digitalWrite(bPin, On); // |    |
-  digitalWrite(cPin, On); // |    |
-  digitalWrite(dPin, On); // |    |
-  digitalWrite(ePin, On); // |____|
-  digitalWrite(fPin, On); 
-  digitalWrite(gPin, Off);   
-}
+// void nine() {
+//   digitalWrite(Pin_a, On);  //  ____
+//   digitalWrite(Pin_b, On);  // |    |
+//   digitalWrite(Pin_c, On);  // |____|
+//   digitalWrite(Pin_d, On);  //      |
+//   digitalWrite(Pin_e, Off); //  ____|
+//   digitalWrite(Pin_f, On); 
+//   digitalWrite(Pin_g, On);
+// }
+
+// void zero() {                 
+//   digitalWrite(Pin_a, On); //  ____
+//   digitalWrite(Pin_b, On); // |    |
+//   digitalWrite(Pin_c, On); // |    |
+//   digitalWrite(Pin_d, On); // |    |
+//   digitalWrite(Pin_e, On); // |____|
+//   digitalWrite(Pin_f, On); 
+//   digitalWrite(Pin_g, Off);   
+// }
