@@ -54,16 +54,14 @@ void setup() {
 void loop() {
   // Wait for button to be pressed, then run the test routine
   if (digitalRead(PIN_BUTTON_P1) == LOW) {
-    Serial.println("Player 1 rolling...");
-    rollTheDice(6, 150);
-    tone(PIN_BUZZER, BEEP_FREQUENCY, 300);
+    Serial.println("Player 1 pressed button");
+    rollTheDice(1, 6, 150);
     delay(300); // debounce
   }
 
   if (digitalRead(PIN_BUTTON_P2) == LOW) {
-    Serial.println("Player 2 rolling...");
-    rollTheDice(6, 150);
-    tone(PIN_BUZZER, BEEP_FREQUENCY, 300);
+    Serial.println("Player 2 pressed button");
+    rollTheDice(2, 6, 150);
     delay(300); // debounce
   }
 }
@@ -72,16 +70,21 @@ int rollOnce() {
   return random(1, 7);
 }
 
-void rollTheDice(int count, int delayLength) {
+void rollTheDice(int player, int count, int delayLength) {
   for (int i = 0; i < count; i++) {
-    int number = random(1,  7);      // Get random number from 1 to 6
-    Serial.print("Rolling: ");
+    int number = random(1, 7);  // 1 to 6
+
+    Serial.print("Player ");
+    Serial.print(player);
+    Serial.print(" rolling: ");
     Serial.println(number);
-    tone(PIN_BUZZER, BEEP_FREQUENCY, 5);  // Beep very shortly ("click")
-    showNumber(number);           // Show the number
-    delay(delayLength);           // Wait
+
+    tone(PIN_BUZZER, BEEP_FREQUENCY, 5);
+    showNumber(number);
+    delay(delayLength);
   }
 }
+
 
 void showNumber(int x) {
   if (Off == 0) {
