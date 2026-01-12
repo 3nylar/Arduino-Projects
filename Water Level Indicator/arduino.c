@@ -17,7 +17,7 @@ const int ledGreen = 7;
 const int buzzer = 8;
 
 // ---------- SETTINGS ----------
-const int TANK_HEIGHT = 400; // mm, adjust to your tank height
+const int TANK_HEIGHT = 10; // cm, adjust to your tank height
 const int NUM_READINGS = 5;  // for averaging
 const int LOW_THRESHOLD = 25;    // % for low water warning
 const int HIGH_THRESHOLD = 95;   // % for almost full
