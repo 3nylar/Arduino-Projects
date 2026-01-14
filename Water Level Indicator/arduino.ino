@@ -9,15 +9,16 @@ const uint8_t LCD_ROWS = 2;
 LiquidCrystal_I2C lcd(LCD_ADDR, LCD_COLS, LCD_ROWS);
 
 // ---------- PINS ----------
-const int trigPin = 9;
-const int echoPin = 10;
-const int ledRed = 5;
-const int ledYellow = 6;
-const int ledGreen = 7;
-const int buzzer = 8;
+const uint8_t trigPin = 9;
+const uint8_t echoPin = 10;
+const uint8_t ledRed = 5;
+const uint8_t ledYellow = 6;
+const uint8_t ledGreen = 7;
+const uint8_t buzzer = 8;
 
 // ---------- SETTINGS ----------
-const int TANK_HEIGHT = 10; // cm, adjust to your tank height
+const float DIST_EMPTY = 12.0; // cm, adjust to your tank height
+const float DIST_FULL = 2.0;  // cm, adjust to your tank height
 const int NUM_READINGS = 5;  // for averaging
 const int LOW_THRESHOLD = 25;    // % for low water warning
 const int HIGH_THRESHOLD = 95;   // % for almost full
