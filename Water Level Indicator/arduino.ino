@@ -19,9 +19,35 @@ const uint8_t buzzer = 8;
 // ---------- SETTINGS ----------
 const float DIST_EMPTY = 12.0; // cm, adjust to your tank height
 const float DIST_FULL = 2.0;  // cm, adjust to your tank height
-const int NUM_READINGS = 5;  // for averaging
-const int LOW_THRESHOLD = 25;    // % for low water warning
-const int HIGH_THRESHOLD = 95;   // % for almost full
+const uint8_t NUM_READINGS = 5;  // for averaging
+
+const uint8_t LOW_THRESHOLD = 25;    // % for low water warning
+const uint8_t HIGH_THRESHOLD = 95;   // % for almost full
+
+// ---------- TIMING ----------
+unsigned long lastBeepTime = 0;
+
+void buzzerGreen() {
+  if (millis() - lastBeepTime >= 3000) {
+    tone(buzzer, 2000, 100); // short high beep
+    lastBeepTime = millis();
+  }
+}
+
+void buzzerYellow() {
+  if (millis() - lastBeepTime >= 1000) {
+    tone(buzzer, 1500, 150); // medium beep
+    lastBeepTime = millis();
+  }
+}
+
+void buzzerRed() {
+  if (millis() - lastBeepTime >= 500) {
+    tone(buzzer, 800, 200);  // urgent low beep
+    lastBeepTime = millis();
+  }
+}
+
 
 void setup() {
   Serial.begin(9600);
@@ -66,31 +92,35 @@ long getAverageDistance() {
 
 void loop() {
   long distance = getAverageDistance(); // cm
-  if(distance > TANK_HEIGHT) distance = TANK_HEIGHT; // limit max distance
+  if(distance > DIST_EMPTY) distance = DIST_EMPTY; // limit
+  if (distance < DIST_FULL)  distance = DIST_FULL; // limit
   
-  int waterLevelPercent = ((TANK_HEIGHT - distance) * 100) / TANK_HEIGHT;
-  if(waterLevelPercent < 0) waterLevelPercent = 0;
-  if(waterLevelPercent > 100) waterLevelPercent = 100;
+  int waterLevelPercent = ((DIST_EMPTY - distance) * 100) / (DIST_EMPTY - DIST_FULL); // % calculation 
 
-  Serial.print("Distance: "); Serial.print(distance); Serial.print(" cm, ");
-  Serial.print("Level: "); Serial.print(waterLevelPercent); Serial.println("%");
+  waterLevelPercent = constrain(waterLevelPercent, 0, 100); // constrain to 0-100%
+
+  Serial.print("Distance: "); 
+  Serial.print(distance); 
+  Serial.print(" cm | Level: ");
+  Serial.print(waterLevelPercent); 
+  Serial.println("%");
 
   // ---------- LED & Buzzer ----------
   if(waterLevelPercent >= HIGH_THRESHOLD){ // High water level
     digitalWrite(ledGreen, HIGH);
     digitalWrite(ledYellow, LOW);
     digitalWrite(ledRed, LOW);
-    digitalWrite(buzzer, HIGH);
+    buzzerGreen();
   } else if(waterLevelPercent >= LOW_THRESHOLD){ // Midlevel
     digitalWrite(ledGreen, LOW);
     digitalWrite(ledYellow, HIGH);
     digitalWrite(ledRed, LOW);
-    digitalWrite(buzzer, LOW);
+    buzzerYellow();
   } else { // low water
     digitalWrite(ledGreen, LOW);
     digitalWrite(ledYellow, LOW);
     digitalWrite(ledRed, HIGH);
-    digitalWrite(buzzer, HIGH); // alert
+    buzzerRed(); // alert
   }
 
   // ---------- LCD ----------
@@ -104,5 +134,5 @@ void loop() {
   lcd.print(distance);
   lcd.print("cm   ");
 
-  delay(1000);
+  delay(500);
 }
