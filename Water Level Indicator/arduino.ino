@@ -14,7 +14,7 @@ const uint8_t echoPin = 10;
 const uint8_t ledRed = 5;
 const uint8_t ledYellow = 6;
 const uint8_t ledGreen = 7;
-const uint8_t buzzer = 8;
+const uint8_t buzzer = 12;
 
 // ---------- SETTINGS ----------
 const float DIST_EMPTY = 12.0; // cm, adjust to your tank height
